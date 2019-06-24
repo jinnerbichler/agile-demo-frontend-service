@@ -1,11 +1,20 @@
 pipeline {
-    agent {
-        docker { image 'benhall/dind-jenkins-agent' }
-    }
+    agent any
+
     stages {
+        stage('Build') {
+            steps {
+                app = docker.build("jinnerbichler/agile-demo-frontend-service")
+            }
+        }
         stage('Test') {
             steps {
-                sh 'docker --version'
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying....'
             }
         }
     }
