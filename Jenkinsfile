@@ -17,7 +17,9 @@ podTemplate(label: label,
         def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
 
         stage('Test') {
-            sh "docker --version"
+            container('docker') {
+                sh "docker --version"
+            }
         }
     }
 }
