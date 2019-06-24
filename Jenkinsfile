@@ -22,7 +22,7 @@ podTemplate(name: label, label: label,
         /***************** BUILD Docker image ******************************/
         stage('Build') {
             container('docker') {
-                dockerImage = docker.build("${registry}:${env.BUILD_ID}")
+                dockerImage = docker.build("${registry}:${env.BUILD_ID}", "--no-cache .")
             }
         }
 
