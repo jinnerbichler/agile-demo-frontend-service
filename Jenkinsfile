@@ -1,21 +1,9 @@
-pipeline {
-    agent any
+node {
+    checkout scm
 
-    stages {
-        stage('Build') {
-            steps {
-                docker.build("jinnerbichler/agile-demo-frontend-service")
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+    def customImage = docker.build("my-image:${env.BUILD_ID}")
+
+    customImage.inside {
+        sh 'make test'
     }
 }
