@@ -48,10 +48,10 @@ podTemplate(name: label, label: label,
 //        }
 
         /***************** Deploy application ******************************/
-        if (env.BRANCH_NAME == 'master') {
+        if (env.BRANCH_NAME == 'staging') {
             stage('Deploy') {
                 container('kubectl') {
-                    sh "kubectl get pods"
+                    sh "kubectl apply -f k8s-staging.yml"
                 }
             }
         }
