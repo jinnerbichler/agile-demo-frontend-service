@@ -15,42 +15,42 @@ podTemplate(name: label, label: label,
         def dockerImage
 
         /***************** Clone project ******************************/
-        stage('Clone') {
-            checkout scm
-        }
-
-        /***************** BUILD Docker image ******************************/
-        stage('Build') {
-            container('docker') {
-                dockerImage = docker.build("${registry}:${env.BUILD_ID}", "--no-cache .")
-            }
-        }
-
-        /***************** PUSH Docker image ******************************/
-        if (env.BRANCH_NAME == 'master') {
-            stage('Push') {
-                container('docker') {
-                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
-                        dockerImage.push("master")
-                        dockerImage.push("latest")
-                    }
-                }
-            }
-        }
-        if (env.BRANCH_NAME == 'staging') {
-            stage('Push') {
-                container('docker') {
-                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
-                        dockerImage.push("staging")
-                    }
-                }
-            }
-        }
+//        stage('Clone') {
+//            checkout scm
+//        }
+//
+//        /***************** BUILD Docker image ******************************/
+//        stage('Build') {
+//            container('docker') {
+//                dockerImage = docker.build("${registry}:${env.BUILD_ID}", "--no-cache .")
+//            }
+//        }
+//
+//        /***************** PUSH Docker image ******************************/
+//        if (env.BRANCH_NAME == 'master') {
+//            stage('Push') {
+//                container('docker') {
+//                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+//                        dockerImage.push("master")
+//                        dockerImage.push("latest")
+//                    }
+//                }
+//            }
+//        }
+//        if (env.BRANCH_NAME == 'staging') {
+//            stage('Push') {
+//                container('docker') {
+//                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+//                        dockerImage.push("staging")
+//                    }
+//                }
+//            }
+//        }
 
         /***************** Deploy application ******************************/
         if (env.BRANCH_NAME == 'master') {
             stage('Deploy') {
-                // Todo
+                sh "kubectl get pods"
             }
         }
     }
