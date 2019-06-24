@@ -1,22 +1,37 @@
-node {
-    def app
+pipeline {
+    // Assign to docker slave(s) label, could also be 'any'
+    agent {
+        label 'docker'
+    }
 
-    stage('Clone repository') {
-        checkout scm
-
-        docker.image('mysql:5').withRun('-e "MYSQL_ROOT_PASSWORD=my-secret-pw" -p 3306:3306') { c ->
-            /* Wait until mysql service is up */
-            sh 'while ! mysqladmin ping -h0.0.0.0 --silent; do sleep 1; done'
+    stages {
+        stage('Docker node test') {
+            agent {
+                docker {
+                    // Set both label and image
+                    label 'docker'
+                    image 'node:7-alpine'
+                    args '--name docker-node' // list any args
+                }
+            }
+            steps {
+                // Steps run in node:7-alpine docker container on docker slave
+                sh 'node --version'
+            }
         }
-    }
 
-    stage('Build image') {
-        app = docker.build("getintodevops/hellonode")
-    }
-
-    stage('Test image') {
-    }
-
-    stage('Push image') {
+        stage('Docker maven test') {
+            agent {
+                docker {
+                    // Set both label and image
+                    label 'docker'
+                    image 'maven:3-alpine'
+                }
+            }
+            steps {
+                // Steps run in maven:3-alpine docker container on docker slave
+                sh 'mvn --version'
+            }
+        }
     }
 }
