@@ -1,10 +1,9 @@
-def label = "worker-${UUID.randomUUID().toString()}"
+def label = "worker-agile-demo-frontend
 
 podTemplate(label: label,
         containers: [
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
-                containerTemplate(name: 'helm', image: 'lachlanevenson/k8s-helm:latest', command: 'cat', ttyEnabled: true)
         ],
         volumes: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
@@ -19,6 +18,7 @@ podTemplate(label: label,
         stage('Test') {
             container('docker') {
                 sh "docker --version"
+                def customImage = docker.build("my-image:${env.BUILD_ID}")
             }
         }
     }
