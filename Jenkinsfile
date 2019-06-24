@@ -1,6 +1,6 @@
 def label = "worker-agile-demo-frontend"
 
-podTemplate(name: label, label: label, idleMinutes: 90, podRetention: always(),
+podTemplate(name: label, label: label,
         containers: [
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
@@ -9,6 +9,10 @@ podTemplate(name: label, label: label, idleMinutes: 90, podRetention: always(),
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]) {
     node(label) {
+
+        def registry = "jinnerbichler/agile-demo-frontend"
+        def registryCredential = "dockerhub"
+
         def myRepo = checkout scm
         def gitCommit = myRepo.GIT_COMMIT
         def gitBranch = myRepo.GIT_BRANCH
@@ -18,7 +22,9 @@ podTemplate(name: label, label: label, idleMinutes: 90, podRetention: always(),
         stage('Test') {
             container('docker') {
                 sh "docker --version"
-                def customImage = docker.build("my-image:${env.BUILD_ID}")
+
+                def dockerImage = docker.build("${registry}:${env.BUILD_ID}")
+                dockerImage.push()
             }
         }
     }
