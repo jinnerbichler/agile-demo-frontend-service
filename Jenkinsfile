@@ -50,7 +50,9 @@ podTemplate(name: label, label: label,
         /***************** Deploy application ******************************/
         if (env.BRANCH_NAME == 'master') {
             stage('Deploy') {
-                sh "kubectl get pods"
+                container('kubectl') {
+                    sh "kubectl get pods"
+                }
             }
         }
     }
