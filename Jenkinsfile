@@ -1,21 +1,17 @@
-pipeline {
-    agent any
+node {
+    def app
 
-    stages {
-        stage('Build') {
-            steps {
-                app = docker.build("jinnerbichler/agile-demo-frontend-service")
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+    stage('Clone repository') {
+        checkout scm
+    }
+
+    stage('Build image') {
+        app = docker.build("getintodevops/hellonode")
+    }
+
+    stage('Test image') {
+    }
+
+    stage('Push image') {
     }
 }
