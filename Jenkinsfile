@@ -1,6 +1,6 @@
-def label = "worker-agile-demo-frontend
+def label = "worker-agile-demo-frontend"
 
-podTemplate(label: label,
+podTemplate(label: label, idleMinutes: 90,
         containers: [
                 containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
                 containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.8.8', command: 'cat', ttyEnabled: true),
