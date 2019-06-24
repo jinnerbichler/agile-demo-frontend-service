@@ -51,6 +51,7 @@ podTemplate(name: label, label: label,
         if (env.BRANCH_NAME == 'staging') {
             stage('Deploy') {
                 container('kubectl') {
+                    sh "ls -la"
                     sh "kubectl apply -f k8s-staging.yml"
                 }
             }
