@@ -24,7 +24,9 @@ podTemplate(name: label, label: label,
                 sh "docker --version"
 
                 def dockerImage = docker.build("${registry}:${env.BUILD_ID}")
-                dockerImage.push()
+                docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+                    dockerImage.push()
+                }
             }
         }
     }
