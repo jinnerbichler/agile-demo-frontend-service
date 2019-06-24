@@ -12,22 +12,33 @@ podTemplate(name: label, label: label,
 
         def registry = "jinnerbichler/agile-demo-frontend"
         def registryCredential = "dockerhub"
+        def dockerImage
 
-        def myRepo = checkout scm
-        def gitCommit = myRepo.GIT_COMMIT
-        def gitBranch = myRepo.GIT_BRANCH
-        def shortGitCommit = "${gitCommit[0..10]}"
-        def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
+        /***************** Clone project ******************************/
+        stage('Clone') {
+            checkout scm
+        }
 
-        stage('Test') {
+        /***************** BUILD Docker image ******************************/
+        stage('Build') {
             container('docker') {
-                sh "docker --version"
+                dockerImage = docker.build("${registry}:${env.BUILD_ID}")
+            }
+        }
 
-                def dockerImage = docker.build("${registry}:${env.BUILD_ID}")
+        /***************** PUSH Docker image ******************************/
+        stage('Push') {
+            container('docker') {
                 docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
                     dockerImage.push()
+                    dockerImage.push("latest")
                 }
             }
+        }
+
+        /***************** Deploy application ******************************/
+        stage('Deploy') {
+            // Todo
         }
     }
 }
