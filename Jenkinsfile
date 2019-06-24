@@ -41,7 +41,6 @@ podTemplate(name: label, label: label,
             stage('Push') {
                 container('docker') {
                     docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
-                        dockerImage.push()
                         dockerImage.push("staging")
                     }
                 }
