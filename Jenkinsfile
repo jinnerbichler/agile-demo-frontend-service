@@ -27,18 +27,32 @@ podTemplate(name: label, label: label,
         }
 
         /***************** PUSH Docker image ******************************/
-        stage('Push') {
-            container('docker') {
-                docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
-                    dockerImage.push()
-                    dockerImage.push("latest")
+        if (env.BRANCH_NAME == 'master') {
+            stage('Push') {
+                container('docker') {
+                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+                        dockerImage.push("master")
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
+        if (env.BRANCH_NAME == 'staging') {
+            stage('Push') {
+                container('docker') {
+                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+                        dockerImage.push()
+                        dockerImage.push("staging")
+                    }
                 }
             }
         }
 
         /***************** Deploy application ******************************/
-        stage('Deploy') {
-            // Todo
+        if (env.BRANCH_NAME == 'master') {
+            stage('Deploy') {
+                // Todo
+            }
         }
     }
 }
